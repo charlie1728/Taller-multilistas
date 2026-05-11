@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Municipios - Colombia</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        #map {
+            height: calc(100vh - 100px);
+            width: 100%;
+        }
+
+        .leaflet-popup-content {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 250px;
+        }
+
+        .leaflet-popup-content strong {
+            color: #2c3e50;
+        }
+
+        .info-box {
+            background-color: #ecf0f1;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ Mapa de Municipios de Colombia</h1>
+        <p>Visualización interactiva de municipios, islas y áreas no municipalizadas</p>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        // Crear el mapa centrado en Colombia
+        const map = L.map('map').setView([4.5709, -74.2973], 6);
+
+        // Agregar la capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Marcadores del servidor
+        const markers = {{ markers | tojson }};
+
+        // Agregar los marcadores al mapa
+        markers.forEach(function(markerData) {
+            const marker = L.circleMarker(
+                [markerData.lat, markerData.lon],
+                {
+                    radius: 4,
+                    fillColor: '#3498db',
+                    color: '#2c3e50',
+                    weight: 1,
+                    opacity: 0.8,
+                    fillOpacity: 0.7
+                }
+            ).addTo(map);
+
+            // Agregar popup al marcador
+            marker.bindPopup(markerData.popup);
+        });
+
+        // Mostrar mensaje si no hay marcadores
+        if (markers.length === 0) {
+            console.warn('No se cargaron marcadores.');
+        } else {
+            console.log('Marcadores cargados: ' + markers.length);
+        }
+    </script>
+</body>
+</html>

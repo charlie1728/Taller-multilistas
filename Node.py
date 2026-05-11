@@ -59,6 +59,25 @@ class MultiLista:
             # print(f"  -> Sublista: {[m['Nombre Municipio'] for m in actual.sublista]}")
             actual = actual.next
 
+    def a_json(self):
+        """Convierte la MultiLista a formato JSON para exposición en API"""
+        resultado = {
+            "pais": "Colombia",
+            "departamentos": []
+        }
+
+        actual = self.cabeza
+        while actual:
+            departamento = {
+                "nombre": actual.name,
+                "codigo": actual.codigo_departamento,
+                "municipios": actual.sublista
+            }
+            resultado["departamentos"].append(departamento)
+            actual = actual.next
+
+        return resultado
+
 # La parte de ejemplo que tenías al final se elimina para enfocarnos en la carga del CSV
 # ml = MultiLista()
 # ml.insertar("Nodo1")
